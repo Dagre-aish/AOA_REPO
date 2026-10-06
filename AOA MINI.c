@@ -10,10 +10,8 @@ long long placementsTried = 0;
 long long backtracks = 0;
 int solutionCount = 0;
 
-
 int **solutions = NULL;
 int solutionCapacity = 0;
-
 
 int isSafe(int row, int col)
 {
@@ -21,11 +19,9 @@ int isSafe(int row, int col)
 
     for (i = 0; i < col; i++)
     {
-        /* Same row */
         if (board[i] == row)
             return 0;
 
-        /* Same diagonal */
         if (abs(board[i] - row) == abs(i - col))
             return 0;
     }
@@ -33,29 +29,22 @@ int isSafe(int row, int col)
     return 1;
 }
 
-
 void storeSolution()
 {
     int i;
+    int newCapacity;
 
     if (solutionCount >= solutionCapacity)
     {
-        int newCapacity;
-
         if (solutionCapacity == 0)
             newCapacity = 10;
         else
             newCapacity = solutionCapacity * 2;
 
-        solutions = realloc(
-            solutions,
-            newCapacity * sizeof(int *)
-        );
+        solutions = realloc(solutions, newCapacity * sizeof(int *));
 
         for (i = solutionCapacity; i < newCapacity; i++)
-        {
             solutions[i] = malloc(n * sizeof(int));
-        }
 
         solutionCapacity = newCapacity;
     }
@@ -102,17 +91,15 @@ void displayMatrix(int solution[])
     }
 }
 
-/* Backtracking */
 void solve(int col)
 {
     int row;
 
-    /* All queens placed */
     if (col == n)
     {
         storeSolution();
 
-        printf("\n*** Solution %d found ***\n", solutionCount);
+        printf("\nSolution %d found\n", solutionCount);
         displayBoard(board);
 
         return;
@@ -122,7 +109,8 @@ void solve(int col)
     {
         placementsTried++;
 
-        printf("\nTrying Row %d, Column %d", row + 1, col + 1);
+        printf("\nTrying Row %d, Column %d",
+               row + 1, col + 1);
 
         if (isSafe(row, col))
         {
@@ -132,12 +120,8 @@ void solve(int col)
 
             solve(col + 1);
 
-            
-            printf(
-                "BACKTRACK: Removing queen from Row %d, Column %d\n",
-                row + 1,
-                col + 1
-            );
+            printf("Backtrack: Row %d, Column %d\n",
+                   row + 1, col + 1);
 
             board[col] = -1;
             backtracks++;
@@ -148,7 +132,6 @@ void solve(int col)
         }
     }
 }
-
 
 void freeSolutions()
 {
@@ -163,13 +146,9 @@ void freeSolutions()
 int main()
 {
     int i;
-    int choice;
 
-    printf("============================================\n");
-    printf("       N-QUEEN PLACEMENT SIMULATOR\n");
-    printf("============================================\n");
+    printf("N-Queen Placement Simulator\n");
 
-  
     printf("\nEnter board size N: ");
     scanf("%d", &n);
 
@@ -183,17 +162,12 @@ int main()
     for (i = 0; i < MAX_N; i++)
         board[i] = -1;
 
-    printf("\n============================================\n");
-    printf("Board Size: %d x %d\n", n, n);
-    printf("============================================\n");
-
-    printf("\nStarting Backtracking...\n");
+    printf("\nBoard Size: %d x %d\n", n, n);
+    printf("Starting Backtracking...\n");
 
     solve(0);
 
-    printf("\n\n============================================\n");
-    printf("             FINAL RESULT\n");
-    printf("============================================\n");
+    printf("\nFinal Result\n");
 
     if (solutionCount == 0)
     {
@@ -201,14 +175,12 @@ int main()
     }
     else
     {
-        printf("\nTotal Number of Solutions: %d\n", solutionCount);
-
+        printf("\nTotal Number of Solutions: %d\n",
+               solutionCount);
 
         for (i = 0; i < solutionCount; i++)
         {
-            printf("\n--------------------------------------------\n");
-            printf("              SOLUTION %d\n", i + 1);
-            printf("--------------------------------------------\n");
+            printf("\nSolution %d\n", i + 1);
 
             printf("\nChessboard:\n");
             displayBoard(solutions[i]);
@@ -218,17 +190,11 @@ int main()
         }
     }
 
-    /* Stata*/
-    printf("\n============================================\n");
-    printf("          ALGORITHM STATISTICS\n");
-    printf("============================================\n");
-
+    printf("\nAlgorithm Statistics\n");
     printf("Board Size       : %d x %d\n", n, n);
     printf("Solutions Found  : %d\n", solutionCount);
     printf("Placements Tried : %lld\n", placementsTried);
     printf("Backtracks       : %lld\n", backtracks);
-
-    printf("============================================\n");
 
     freeSolutions();
 
